@@ -1,0 +1,12 @@
+base_url: "https://jsonplaceholder.typicode.com"  # Example API base URL
+timeout: 10  # Timeout for HTTP requests
+
+redis:
+  host: "redis"  # Redis server hostname (could be an IP or a Docker service name)
+  port: 6379  # Default Redis port
+  db: 0  # Default Redis database (0 is the default)
+  password: null  # Set to null if no password is required
+  timeout: 50  # Redis connection timeout
+
+message_queue:
+  queue_name: "the_message_queue"  # Name of the queue to publish to

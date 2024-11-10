@@ -1,0 +1,47 @@
+services:
+  agent:
+    build:
+      context: ./agent
+      dockerfile: Dockerfile  # Your agent Dockerfile
+    environment:
+      - REDIS_HOST=redis  # Redis service name
+      - REDIS_PORT=6379   # Default Redis port
+      - PYTHONUNBUFFERED=1
+    networks:
+      - app-network
+    depends_on:
+      - redis
+    restart: always  # Ensure the agent restarts if it fails
+    deploy:
+      replicas: 3  # Run 3 replicas of the agent service
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"  # Expose Redis on port 6379
+    networks:
+      - app-network
+    restart: always
+  
+  producer:
+    image: redis:alpine  # Use redis:alpine to get redis-cli and a shell
+    command: sh -c "/scripts/producer.sh"  # Run the produce.sh script
+    logging:
+      driver: none
+    volumes:
+      - ./producer.sh:/scripts/producer.sh  # Mount the script into the container
+    environment:
+      - REDIS_HOST=redis  # Redis service name
+      - REDIS_PORT=6379   # Default Redis port
+    networks:
+      - app-network
+    restart: "no"
+    depends_on:
+      - redis
+
+# Define a custom network for the services to communicate
+networks:
+  app-network:
+    driver: bridge
