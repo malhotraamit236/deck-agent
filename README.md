@@ -7,6 +7,8 @@ docker compose up --build
 ```
 You'll should start seeing logs from the three agent instances (hardcoded 3 replicas in `docker-compose.yml`)
 
+The `producer` service that enqueues work will shutdown after enqueueing 20 tasks. To keep repeating it change the restart property for producer in the `docker-compose.yml` to "always"
+
 ## Architecture
 Agent contains:
 - `api_client` module to fetch data from a mock service `jsonplaceholder.typicode.com`
